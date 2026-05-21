@@ -1,0 +1,52 @@
+version: 0.1
+log:
+  level: info
+  formatter: text
+  fields:
+    service: registry
+
+storage:
+  cache:
+    blobdescriptor: redis
+  filesystem:
+    rootdirectory: /var/lib/registry
+  maintenance:
+    uploadpurging:
+      enabled: true
+      age: 168h
+    readonly:
+      enabled: false
+
+# --- EXTERNAL METADATA DATABASE (PostgreSQL on Host) ---
+database:
+  enabled: true
+  postgres:
+    host: host.docker.internal
+    port: 5432
+    user: your_pg_user        # Replace with your external DB user
+    password: your_pg_password  # Replace with your external DB password
+    database: dockerhub_database # Replace with your external DB name
+    sslmode: disable # Set to 'require' if your PG instance requires encrypted SSL connections
+
+# --- REDIS PERFORMANCE CACHE ---
+redis:
+  addr: registry-cache:6379
+  db: 0
+  dialtimeout: 10ms
+  readtimeout: 10ms
+  writetimeout: 10ms
+  pool:
+    maxidle: 16
+    maxactive: 64
+    idletimeout: 300s
+
+# --- AUTHENTICATION ---
+auth:
+  htpasswd:
+    realm: "Production Registry"
+    path: /etc/docker/registry/auth/htpasswd
+
+http:
+  addr: :5000
+  headers:
+    X-Content-Type-Options: [nosniff]
