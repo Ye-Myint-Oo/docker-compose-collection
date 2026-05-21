@@ -21,6 +21,7 @@ services:
       - registry-cache
     extra_hosts:
       - "host.docker.internal:host-gateway" # Resolves the host machine's IP inside Linux Docker
+      #- "host.docker.internal:${HOST_GATEWAY_IP:-172.17.0.1}" # Compatible with docker compose and legacy docker-compose
     volumes:
       - ./config.yml:/etc/docker/registry/config.yml:ro
       - ./auth:/etc/docker/registry/auth:ro
