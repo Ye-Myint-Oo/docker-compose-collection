@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  affine:
+    image: ghcr.io/toeverything/affine-graphql:stable
+    container_name: affine-server
+    ports:
+      - "3010:3010"
+    environment:
+      - NODE_ENV=production
+      - AFFINE_SERVER_PORT=3010
+      - AFFINE_SERVER_HOST=0.0.0.0
+      
+      # DATABASE CONNECTION STRING
+      # "host.docker.internal" points back directly to your host machine's OS
+      - DATABASE_URL=postgres://affine:your_secure_password@host.docker.internal:5432/affine
+      
+      # Admin Account Settings
+      - AFFINE_ADMIN_EMAIL=admin@yourdomain.com
+      - AFFINE_ADMIN_PASSWORD=ChooseAStrongPassword123
+    
+    # This extra directive is critical so "host.docker.internal" resolves correctly on Linux
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    
+    volumes:
+      - affine_data:/root/.affine
+    restart: unless-stopped
+
+volumes:
+  affine_data:
